@@ -1,7 +1,17 @@
+import { useNavigation } from "@react-navigation/native";
 import { useState } from 'react';
 import { FlatList, ImageBackground, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const HeaderDropdownMenu = ({ options, onSelect }) => {
+
+  const navigation = useNavigation();
+  const handleLogout = () =>{
+    setVisible(false);
+    setTimeout(() => {
+      alert("You have logged out!");
+    }, 300);
+  navigation.navigate("index"); 
+  }
   const [visible, setVisible] = useState(false);
   const handleSelect = (item) => {
     onSelect(item);
@@ -26,7 +36,14 @@ const HeaderDropdownMenu = ({ options, onSelect }) => {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.menuItem}
-                  onPress={() => handleSelect(item.value)}
+                  onPress={() => {
+                    if (item.value === "Logout") {
+                      handleLogout();
+                    } else {
+                      handleSelect(item.value);
+                      setVisible(false);
+                    }
+                  }}
                 >
                   <Text style={styles.menuItemText}>{item.label}</Text>
                 </TouchableOpacity>
