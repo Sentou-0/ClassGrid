@@ -55,45 +55,6 @@ const HeaderDropdownMenu = ({ options, onSelect }) => {
   );
 };
 
-const ScheduleTable = ({ schedule, onEdit, onDelete }) => {
-  return (
-    <View style={styles.tableContainer}>
-      <View style={[styles.tableRow, styles.tableHeader]}>
-        <Text style={[styles.tableCell, styles.headerCell]}>Instructor</Text>
-        <Text style={[styles.tableCell, styles.headerCell]}>Subject</Text>
-        <Text style={[styles.tableCell, styles.headerCell]}>Time</Text>
-        <Text style={[styles.tableCell, styles.headerCell]}>Room</Text>
-        <Text style={[styles.tableCell, styles.headerCell]}>Actions</Text>
-      </View>
-      {schedule.length === 0 && (
-        <Text style={{ padding: 10, fontStyle: 'italic' }}>No schedule entries.</Text>
-      )}
-      {schedule.map((item, index) => (
-        <View key={index} style={styles.tableRow}>
-          <Text style={styles.tableCell}>{item.instructor}</Text>
-          <Text style={styles.tableCell}>{item.subject}</Text>
-          <Text style={styles.tableCell}>{item.time}</Text>
-          <Text style={styles.tableCell}>{item.room}</Text>
-          <View style={[styles.tableCell, styles.actionsCell]}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => onEdit(index)}
-            >
-              <Text style={styles.actionText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.actionButton, { backgroundColor: '#ff4d4d' }]}
-              onPress={() => onDelete(index)}
-            >
-              <Text style={styles.actionText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
-    </View>
-  );
-};
-
 const RoomScheduleTable = ({ roomSchedules }) => {
   return (
     <ScrollView horizontal>
@@ -121,29 +82,29 @@ const RoomScheduleTable = ({ roomSchedules }) => {
   );
 };
 
-const ScheduleModal = ({ visible, onClose, onSave, initialData }) => {
-  const [instructor, setInstructor] = useState(initialData?.instructor || '');
-  const [subject, setSubject] = useState(initialData?.subject || '');
-  const [time, setTime] = useState(initialData?.time || '');
-  const [room, setRoom] = useState(initialData?.room || '');
+const AccountModal = ({ visible, onClose }) => {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSave = () => {
-    if (!instructor.trim() || !subject.trim() || !time.trim() || !room.trim()) {
-      alert('Please fill in Instructor, Subject, Time, and Room.');
+    if (newPassword !== confirmPassword) {
+      alert('Passwords do not match!');
       return;
     }
-    onSave({ instructor: instructor.trim(), subject: subject.trim(), time: time.trim(), room: room.trim() });
-    setInstructor('');
-    setSubject('');
-    setTime('');
-    setRoom('');
+    if (newPassword.trim() === '') {
+      alert('Please enter a new password.');
+      return;
+    }
+    // Here you can implement actual password change logic
+    alert('Password changed successfully!');
+    setNewPassword('');
+    setConfirmPassword('');
+    onClose();
   };
 
-  const handleClose = () => {
-    setInstructor('');
-    setSubject('');
-    setTime('');
-    setRoom('');
+  const handleCancel = () => {
+    setNewPassword('');
+    setConfirmPassword('');
     onClose();
   };
 
@@ -151,29 +112,19 @@ const ScheduleModal = ({ visible, onClose, onSave, initialData }) => {
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalBackground}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>{initialData ? 'Edit Entry' : 'Add Entry'}</Text>
+          <Text style={styles.modalTitle}>Change Password</Text>
           <TextInput
-            placeholder="Instructor"
-            value={instructor}
-            onChangeText={setInstructor}
+            placeholder="New Password"
+            value={newPassword}
+            onChangeText={setNewPassword}
+            secureTextEntry
             style={styles.input}
           />
           <TextInput
-            placeholder="Subject"
-            value={subject}
-            onChangeText={setSubject}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Time"
-            value={time}
-            onChangeText={setTime}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Room"
-            value={room}
-            onChangeText={setRoom}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
             style={styles.input}
           />
           <View style={styles.modalButtons}>
@@ -182,7 +133,7 @@ const ScheduleModal = ({ visible, onClose, onSave, initialData }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.modalButton, { backgroundColor: '#aaa' }]}
-              onPress={handleClose}
+              onPress={handleCancel}
             >
               <Text style={styles.modalButtonText}>Cancel</Text>
             </TouchableOpacity>
@@ -193,78 +144,25 @@ const ScheduleModal = ({ visible, onClose, onSave, initialData }) => {
   );
 };
 
-const InstructorsList = ({ instructors }) => {
-  return (
-    <View style={styles.tableContainer}>
-      <View style={[styles.tableRow, styles.tableHeader]}>
-        <Text style={[styles.tableCell, styles.headerCell]}>Name</Text>
-      </View>
-      {instructors.length === 0 ? (
-        <Text style={{ padding: 10, fontStyle: 'italic' }}>No instructors available.</Text>
-      ) : (
-        instructors.map((instructor) => (
-          <View key={instructor.id} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{instructor.name}</Text>
-          </View>
-        ))
-      )}
-    </View>
-  );
-};
-
 const DropdownExample = () => {
   const [headerSelection, setHeaderSelection] = useState(null);
   const [schedule, setSchedule] = useState([
     { instructor: 'Iratus Glenn Cruz', subject: 'Software Engineering', time: '8:00 AM - 9:00 AM', room: 'Computer lab' },
     { instructor: 'Michael G. Albino', subject: 'Information Management', time: '9:00 AM - 10:00 AM', room: 'Hybrid Lab' },
   ]);
-  const [instructors, setInstructors] = useState([
-    { id: '1', name: 'Marie Celia Aglibot'},
-    { id: '2', name: 'Michael Albino'},
-    { id: '3', name: 'Iratus Glenn Cruz'},
-    { id: '4', name: 'Donnel Tongoy'},
-  ]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [accountSubView, setAccountSubView] = useState(null);
+  const [accountModalVisible, setAccountModalVisible] = useState(false);
 
   const headerOptions = [
     { label: 'My Schedule', value: 'My Schedule' },
-    { label: 'Scheduler', value: 'Scheduler' },
     { label: 'Room Schedule', value: 'Room Schedule' },
-    { label: 'Instructors', value: 'Instructors' },
+    { label: 'Account Setting', value: 'Account Setting' },
     { label: 'Logout', value: 'Logout' },
   ];
 
-  const showSchedule = headerSelection === 'Scheduler';
   const showCourseSchedule = headerSelection === 'My Schedule';
   const showRoomSchedule = headerSelection === 'Room Schedule';
-  const showInstructors = headerSelection === 'Instructors';
-
-  const openAddModal = () => {
-    setEditingIndex(null);
-    setModalVisible(true);
-  };
-
-  const openEditModal = (index) => {
-    setEditingIndex(index);
-    setModalVisible(true);
-  };
-
-  const handleSaveEntry = (entry) => {
-    if (editingIndex !== null) {
-      const newSchedule = [...schedule];
-      newSchedule[editingIndex] = entry;
-      setSchedule(newSchedule);
-    } else {
-      setSchedule([...schedule, entry]);
-    }
-    setModalVisible(false);
-  };
-
-  const handleDeleteEntry = (index) => {
-    const newSchedule = schedule.filter((_, i) => i !== index);
-    setSchedule(newSchedule);
-  };
+  const showAccountSetting = headerSelection === 'Account Setting';
 
   // Compile schedules by room
   const roomSchedules = schedule.reduce((acc, entry) => {
@@ -273,10 +171,40 @@ const DropdownExample = () => {
     return acc;
   }, {});
 
+  const handleAccountButton = () => {
+    setAccountModalVisible(true);
+  };
+
+  const handleTermsOfUse = () => {
+    setAccountSubView('terms');
+  };
+
+  const handlePrivacy = () => {
+    setAccountSubView('privacy');
+  };
+
+  const termsOfUseContent = `
+Step-by-Step Guide to Using the App:
+
+1. Open the app and log in with your credentials.
+2. Use the Menu dropdown to select options like My Schedule, Room Schedule, or Account Setting.
+3. In My Schedule, view your personal schedule entries.
+4. In Room Schedule, check schedules by room.
+5. In Account Setting, manage your account, view terms, or privacy policy.
+6. To add or edit schedules, use the Scheduler option if available.
+7. Logout when done to secure your account.
+  `;
+
+  const privacyContent = `
+Privacy Policy:
+
+This app collects minimal personal information necessary for functionality, such as login credentials and schedule data. We do not share your data with third parties without consent. Your data is stored securely and used only for app purposes. For more details, contact support.
+  `;
+
   return (
     <ImageBackground
       source={{
-        uri: 'https://i.pinimg.com/1200x/a1/99/89/a19989a372ed5593c44c09b8241d00f8.jpg', // Replace with your actual background image URL
+        uri: 'https://i.pinimg.com/736x/23/98/a0/2398a0aa5dca1de3c2427a37c4ae5232.jpg', // Replace with your actual background image URL
       }}
       resizeMode="cover"
       style={styles.container}
@@ -285,22 +213,6 @@ const DropdownExample = () => {
       <HeaderDropdownMenu options={headerOptions} onSelect={setHeaderSelection} />
       {headerSelection && (
         <Text style={styles.selectedText}>Selected Menu: {headerSelection}</Text>
-      )}
-
-      {showSchedule && (
-        <>
-          <Text style={styles.scheduleTitle}>Scheduler</Text>
-          <ScrollView horizontal>
-            <ScheduleTable
-              schedule={schedule}
-              onEdit={openEditModal}
-              onDelete={handleDeleteEntry}
-            />
-          </ScrollView>
-          <TouchableOpacity style={styles.addButton} onPress={openAddModal}>
-            <Text style={styles.addButtonText}>+ Add Subject</Text>
-          </TouchableOpacity>
-        </>
       )}
 
       {showCourseSchedule && (
@@ -344,18 +256,52 @@ const DropdownExample = () => {
         </>
       )}
 
-      {showInstructors && (
+      {showAccountSetting && (
         <>
-          <Text style={styles.scheduleTitle}>Instructors</Text>
-          <InstructorsList instructors={instructors} />
+          <Text style={styles.scheduleTitle}>Account Setting</Text>
+          <View style={styles.accountButtons}>
+            <TouchableOpacity style={styles.accountButton} onPress={handleAccountButton}>
+              <Text style={styles.accountButtonText}>Account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.accountButton} onPress={handleTermsOfUse}>
+              <Text style={styles.accountButtonText}>Terms of Use</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.accountButton} onPress={handlePrivacy}>
+              <Text style={styles.accountButtonText}>Privacy</Text>
+            </TouchableOpacity>
+          </View>
+          {accountSubView === 'terms' && (
+            <View style={styles.contentView}>
+              <View style={styles.contentHeader}>
+                <Text style={styles.contentTitle}>Terms of Use</Text>
+                <TouchableOpacity onPress={() => setAccountSubView(null)}>
+                  <Text style={styles.closeButton}>x</Text>
+                </TouchableOpacity>
+              </View>
+              <ScrollView style={styles.contentScroll}>
+                <Text style={styles.contentText}>{termsOfUseContent}</Text>
+              </ScrollView>
+            </View>
+          )}
+          {accountSubView === 'privacy' && (
+            <View style={styles.contentView}>
+              <View style={styles.contentHeader}>
+                <Text style={styles.contentTitle}>Privacy</Text>
+                <TouchableOpacity onPress={() => setAccountSubView(null)}>
+                  <Text style={styles.closeButton}>x</Text>
+                </TouchableOpacity>
+              </View>
+              <ScrollView style={styles.contentScroll}>
+                <Text style={styles.contentText}>{privacyContent}</Text>
+              </ScrollView>
+            </View>
+          )}
         </>
       )}
 
-      <ScheduleModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSave={handleSaveEntry}
-        initialData={editingIndex !== null ? schedule[editingIndex] : null}
+      <AccountModal
+        visible={accountModalVisible}
+        onClose={() => setAccountModalVisible(false)}
       />
     </View>
   </ImageBackground>
@@ -445,32 +391,61 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  actionsCell: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-
-  actionButton: {
-    backgroundColor: '#070707ff',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 3,
-    marginHorizontal: 5,
-  },
-  actionText: {
-    color: 'white',
-  },
-  addButton: {
-    marginTop: 15,
-    backgroundColor: '#28a745',
-    paddingVertical: 12,
+  courseScheduleTableContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 5,
-    alignItems: 'center',
-    alignSelf: 'flex-start',
+    backgroundColor: 'white',
   },
-  addButtonText: {
-    color: 'white',
+  accountButtons: {
+    flexDirection: 'column',
+    marginVertical: 20,
+  },
+  accountButton: {
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  accountButtonText: {
+    color: 'black',
     fontSize: 16,
+  },
+  contentView: {
+    backgroundColor: 'white',
+    borderRadius: 5,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    maxHeight: 400,
+  },
+  contentHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+  },
+  contentTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    fontSize: 20,
+    color: 'red',
+    fontWeight: 'bold',
+  },
+  contentScroll: {
+    padding: 10,
+    maxHeight: 300,
+  },
+  contentText: {
+    fontSize: 16,
+    lineHeight: 24,
   },
   modalBackground: {
     flex: 1,
@@ -511,12 +486,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
-  },
-  courseScheduleTableContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    backgroundColor: 'white',
   },
 });
 

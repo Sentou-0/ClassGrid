@@ -5,7 +5,7 @@ const App = () => {
   return (
     <ImageBackground
       source={{
-        uri: 'https://i.pinimg.com/1200x/a1/99/89/a19989a372ed5593c44c09b8241d00f8.jpg', // Replace with your actual background image URL
+        uri: 'https://i.pinimg.com/736x/23/98/a0/2398a0aa5dca1de3c2427a37c4ae5232.jpg', // Replace with your actual background image URL
       }}
       resizeMode="cover"
       style={styles.container}

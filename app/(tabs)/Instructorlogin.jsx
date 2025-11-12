@@ -1,8 +1,9 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Image, ImageBackground, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function Example() {
+  const router = useRouter();
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -17,65 +18,70 @@ export default function Example() {
         style={styles.backgroundContainer}
       >
         <View style={styles.contentOverlay}> 
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Image
-            alt="App Logo"
-            resizeMode="contain"
-            style={styles.headerImg}
-            source={{ uri: 'https://scontent.fmnl17-6.fna.fbcdn.net/v/t1.15752-9/542009147_764160926408947_8654842669446252397_n.png?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=1LA14WUL2bgQ7kNvwFwFlzS&_nc_oc=AdkyrtHw14d1JqV-Sfv7qgk_tlT_K84IFHD1Hsn4TnMIzUwLz46WRwEujuCkYDA-yKU&_nc_zt=23&_nc_ht=scontent.fmnl17-6.fna&oh=03_Q7cD3wGITjkEzUUXDCtYx4E_57rZszoC_bkEXJGgoUfGDgcbPA&oe=6934E5AE' }} />
+          <View style={styles.backButtonContainer}>
+            <Pressable onPress={() => router.back()} style={styles.backButton}>
+              <Text style={styles.backButtonText}>Back</Text>
+            </Pressable>
+          </View>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Image
+                alt="App Logo"
+                resizeMode="contain"
+                style={styles.headerImg}
+                source={{ uri: 'https://scontent.fmnl17-6.fna.fbcdn.net/v/t1.15752-9/542009147_764160926408947_8654842669446252397_n.png?_nc_cat=109&ccb=1-7&_nc_sid=9f807c&_nc_ohc=1LA14WUL2bgQ7kNvwFwFlzS&_nc_oc=AdkyrtHw14d1JqV-Sfv7qgk_tlT_K84IFHD1Hsn4TnMIzUwLz46WRwEujuCkYDA-yKU&_nc_zt=23&_nc_ht=scontent.fmnl17-6.fna&oh=03_Q7cD3wGITjkEzUUXDCtYx4E_57rZszoC_bkEXJGgoUfGDgcbPA&oe=6934E5AE' }} />
 
-          <Text style={styles.title}>
-            Instructor <Text style={{ color: '#686869ff' }}></Text>
-          </Text>
+              <Text style={styles.title}>
+                Instructor <Text style={{ color: '#686869ff' }}></Text>
+              </Text>
 
-          <Text style={styles.subtitle}>
-            Create you schedule hussle free!
-          </Text>
+              <Text style={styles.subtitle}>
+                Create you schedule hussle free!
+              </Text>
+            </View>
+
+            <View style={styles.form}>
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Username</Text>
+
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  clearButtonMode="while-editing"
+                  keyboardType="email-address"
+                  onChangeText={email => setForm({ ...form, email })}
+                  placeholder="john@example.com"
+                  placeholderTextColor="#6b7280"
+                  style={styles.inputControl}
+                  value={form.email} />
+              </View>
+
+              <View style={styles.input}>
+                <Text style={styles.inputLabel}>Password</Text>
+
+                <TextInput
+                  autoCorrect={false}
+                  clearButtonMode="while-editing"
+                  onChangeText={password => setForm({ ...form, password })}
+                  placeholder="********"
+                  placeholderTextColor="#6b7280"
+                  style={styles.inputControl}
+                  secureTextEntry={true}
+                  value={form.password} />
+              </View>
+
+              <View style={styles.formAction}>
+                <Link href="/Imenu" style={{marginHorizontal: 'auto'}} asChild>
+                        <Pressable style={styles.button}>
+                          <Text style={styles.buttonText}>Sign in</Text>
+                        </Pressable>
+                </Link> 
+              </View>
+            </View>
+          </View>
         </View>
-
-        <View style={styles.form}>
-          <View style={styles.input}>
-            <Text style={styles.inputLabel}>Username</Text>
-
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              clearButtonMode="while-editing"
-              keyboardType="email-address"
-              onChangeText={email => setForm({ ...form, email })}
-              placeholder="john@example.com"
-              placeholderTextColor="#6b7280"
-              style={styles.inputControl}
-              value={form.email} />
-          </View>
-
-          <View style={styles.input}>
-            <Text style={styles.inputLabel}>Password</Text>
-
-            <TextInput
-              autoCorrect={false}
-              clearButtonMode="while-editing"
-              onChangeText={password => setForm({ ...form, password })}
-              placeholder="********"
-              placeholderTextColor="#6b7280"
-              style={styles.inputControl}
-              secureTextEntry={true}
-              value={form.password} />
-          </View>
-
-          <View style={styles.formAction}>
-            <Link href="/Imenu" style={{marginHorizontal: 'auto'}} asChild>
-                    <Pressable style={styles.button}>
-                      <Text style={styles.buttonText}>Sign in</Text>
-                    </Pressable>
-            </Link> 
-          </View>
-        </View>
-      </View>
-    </View>
-    </ImageBackground>
-  </SafeAreaView>
+      </ImageBackground>
+    </SafeAreaView>
   );
 }
 
@@ -86,6 +92,22 @@ const styles = StyleSheet.create({
   contentOverlay: {
     flex: 1,
     backgroundColor: 'rgba(119, 119, 118, 0.6)', 
+  },
+  backButtonContainer: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 1,
+  },
+  backButton: {
+    padding: 10,
+    backgroundColor: 'gray',
+    borderRadius: 5,
+  },
+  backButtonText: {
+    color: '#fdfcfcff',
+    fontSize: 18,
+    fontWeight: '600',
   },
   container: {
     flexGrow: 1,
